@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from sheets import buscar_url_por_codigo, adicionar_link
+import requests
+import csv
 
 encurtador_routes = Blueprint('encurtador', __name__, url_prefix='/encurtador')
 
@@ -29,3 +31,18 @@ def novo_link():
         })
     else:
         return jsonify({"erro": "Falha ao gravar na planilha"}), 500
+
+@encurtador_routes.route("/debug")
+def debug_linhas():
+    SHEET_ID = "1k-ydMq9JEhWGSt7P3D0ucYj2bWNMkhA9uk1kBJiOMb8"
+    SHEET_NAME = "Links"
+    url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        content = response.content.decode("utf-8").splitlines()
+        reader = csv.DictReader(content)
+        linhas = [row for row in reader]
+        return jsonify(linhas)
+    except Exception as e:
+        return jsonify({"erro": f"Falha ao acessar planilha: {str(e)}"}), 500
