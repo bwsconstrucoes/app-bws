@@ -1,9 +1,9 @@
 import requests
 import csv
 
-# ID da planilha Google compartilhada publicamente
 SHEET_ID = "1k-ydMq9JEhWGSt7P3D0ucYj2bWNMkhA9uk1kBJiOMb8"
 SHEET_NAME = "Links"
+WEBAPP_URL = "https://script.google.com/macros/s/AKfycby9h_L99DY8Dp0xW3N8ci6KZizyeRcmQB53f3phbh0XqcqkZkaHc7UDmfQpD3Amj5l5CQ/exec"
 
 def buscar_url_por_codigo(codigo):
     """
@@ -29,14 +29,16 @@ def buscar_url_por_codigo(codigo):
 
 def adicionar_link(codigo, url, expira_em):
     """
-    (Simulado) Adiciona um novo link à planilha
-    ⚠️ Para funcionar de verdade, é necessário configurar:
-    - Google Apps Script
-    - ou uma API como sheet.best
+    Adiciona um novo link à planilha via Google Apps Script
     """
     try:
-        print(f"[Simulado] Adicionando link: {codigo} → {url} (expira em {expira_em})")
-        return True  # Simula sucesso
+        payload = {
+            "codigo": codigo,
+            "url": url,
+            "expira_em": expira_em
+        }
+        response = requests.post(WEBAPP_URL, data=payload)
+        return response.status_code == 200
     except Exception as e:
-        print(f"[Erro] ao simular adição de link: {e}")
+        print(f"[Erro] ao adicionar link via WebApp: {e}")
         return False
