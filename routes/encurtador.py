@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 import os
 
-encurtador_routes = Blueprint('encurtador', __name__)
+encurtador_routes = Blueprint('encurtador', __name__, url_prefix='/encurtador')
 DATA_FILE = "data/links.json"
 
 def carregar_links():
